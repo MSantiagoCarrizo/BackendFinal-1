@@ -1,15 +1,18 @@
 import express from "express";
+import productsRouter from "./routes/products.router.js";
 
 const app = express();
 
-//middlewares
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//routes de prueba
-
+// Ruta principal
 app.get("/", (req, res) => {
-    res.send("Backend funcionando correctamente");
+  res.send("Backend funcionando correctamente");
 });
+
+// API
+app.use("/api/products", productsRouter);
 
 export default app;
