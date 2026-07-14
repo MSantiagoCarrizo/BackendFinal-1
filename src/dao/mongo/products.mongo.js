@@ -2,8 +2,27 @@ import Product from "../../models/product.model.js";
 
 class ProductsMongo {
 
-    async getProducts() {
-        return await Product.find().lean();
+    async getProducts({ limit, page, sort, query }) {
+
+        const filter = {};
+
+        if (query) {
+            if (query === "true" || query === "false") {
+                filter.status = query === "true";
+            } else {
+                filter.category = query;
+            }
+        }
+
+        const options = { page, limit, lean: true };
+
+        if (sort) {
+            options.sort = {
+                price: sort === "asc" ? 1 : -1
+            };
+        }
+
+        return await Product.paginate(filter, options);
     }
 
     async createProduct(productData) {
@@ -15,7 +34,7 @@ class ProductsMongo {
     }
 
     async updateProduct(id, productData) {
-        return await Product.findByIdAndUpdate( id, productData, { new: true, runValidators: true });
+        return await Product.findByIdAndUpdate(id, productData, { new: true, runValidators: true });
     }
 
     async deleteProduct(id) {
