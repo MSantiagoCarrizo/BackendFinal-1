@@ -1,9 +1,7 @@
 import Product from "../../models/product.model.js";
 
 class ProductsMongo {
-
-    async getProducts({ limit, page, sort, query }) {
-
+    async getProducts({ limit = 10, page = 1, sort, query } = {}) {
         const filter = {};
 
         if (query) {
@@ -40,7 +38,6 @@ class ProductsMongo {
     async deleteProduct(id) {
         return await Product.findByIdAndDelete(id).lean();
     }
-
 }
 
 export default new ProductsMongo();

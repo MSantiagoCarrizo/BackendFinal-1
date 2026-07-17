@@ -13,7 +13,6 @@ class CartsMongo {
 
 
     async addProductToCart(cartId, productId) {
-
         const cart = await Cart.findById(cartId);
 
         if (!cart) {
@@ -39,12 +38,10 @@ class CartsMongo {
         await cart.save();
 
         return cart.populate("products.product");
-
     }
 
 
     async removeProductFromCart(cartId, productId) {
-
         const cart = await Cart.findById(cartId);
 
         if (!cart) {
@@ -62,7 +59,6 @@ class CartsMongo {
 
 
     async updateProductQuantity(cartId, productId, quantity) {
-
         const cart = await Cart.findById(cartId);
 
         if (!cart) {
@@ -86,12 +82,13 @@ class CartsMongo {
 
 
     async updateCart(cartId, products) {
-
         const cart = await Cart.findById(cartId);
 
         if (!cart) {
             return null;
         }
+
+        
 
         cart.products = products;
 
@@ -102,7 +99,6 @@ class CartsMongo {
 
 
     async clearCart(cartId) {
-
         const cart = await Cart.findById(cartId);
 
         if (!cart) {

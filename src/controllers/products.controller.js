@@ -38,19 +38,14 @@ export const createProduct = async (req, res) => {
     try {
         const newProduct = await productsMongo.createProduct(req.body);
 
-        res.status(201).json({
-            status: "success",
-            payload: newProduct
-        });
+        const io = req.app.get("io");
+        const result = await productsMongo.getProducts();
+        io.emit("productsUpdated", result.docs);
 
+        res.status(201).json({ status: "success", payload: newProduct });
     } catch (error) {
-
-        res.status(500).json({
-            status: "error",
-            message: error.message
-        });
+        res.status(500).json({ status: "error", message: error.message });
     }
-
 };
 
 export const getProductById = async (req, res) => {
@@ -61,25 +56,13 @@ export const getProductById = async (req, res) => {
         const product = await productsMongo.getProductById(pid);
 
         if (!product) {
-            return res.status(404).json({
-                status: "error",
-                message: "Producto no encontrado"
-            });
+            return res.status(404).json({ status: "error", message: "Producto no encontrado" });
         }
 
-        res.status(200).json({
-            status: "success",
-            payload: product
-        });
-
+        res.status(200).json({ status: "success", payload: product });
     } catch (error) {
-        res.status(500).json({
-            status: "error",
-            message: error.message
-        });
-
+        res.status(500).json({ status: "error", message: error.message });
     }
-
 };
 
 export const updateProduct = async (req, res) => {
@@ -100,16 +83,17 @@ export const updateProduct = async (req, res) => {
             return res.status(404).json({ status: "error", message: "Producto no encontrado" });
         }
 
-        res.status(200).json({ status: "success", payload: updatedProduct });
+        const io = req.app.get("io");
+        const result = await productsMongo.getProducts();
+        io.emit("productsUpdated", result.docs);
 
+        res.status(200).json({ status: "success", payload: updatedProduct });
     } catch (error) {
         res.status(500).json({ status: "error", message: error.message });
     }
-
 };
 
 export const deleteProduct = async (req, res) => {
-
     try {
         const { pid } = req.params;
 
@@ -123,10 +107,12 @@ export const deleteProduct = async (req, res) => {
             return res.status(404).json({ status: "error", message: "Producto no encontrado" });
         }
 
-        res.status(200).json({ status: "success", message: "Producto eliminado correctamente" });
+        const io = req.app.get("io");
+        const result = await productsMongo.getProducts();
+        io.emit("productsUpdated", result.docs);
 
+        res.status(200).json({ status: "success", message: "Producto eliminado correctamente" });
     } catch (error) {
         res.status(500).json({ status: "error", message: error.message });
     }
-    
 };
